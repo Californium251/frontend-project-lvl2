@@ -1,10 +1,13 @@
-import { read, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
+import process from 'node:process';
+import * as path from 'path'
 
 const compare = (firstFilePath, secondFilePath) => {
   const makeObj = (filePath) => JSON.parse(readFileSync(filePath, 'utf-8'));
   const makeArrOfKeys = (obj) => Object.entries(obj).map((el) => el[0]);
-  const firstObj = makeObj(firstFilePath);
-  const secondObj = makeObj(secondFilePath);
+  const makePath = (filePath) => path.resolve(process.cwd(), filePath);
+  const firstObj = makeObj(makePath(firstFilePath));
+  const secondObj = makeObj(makePath(secondFilePath));
   const arr = makeArrOfKeys(firstObj)
     .concat(makeArrOfKeys(secondObj))
     .reduce((acc, el) => {
