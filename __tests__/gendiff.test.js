@@ -18,7 +18,7 @@ test('test initial files in the task', () => {
 });
 
 test('test same files', () => {
-  expect(genDiff(`${__dirname}/test_file_1.1.json`, `${__dirname}/test_file_1.2.json`)).toStrictEqual({
+  expect(genDiff(`${__dirname}/../__fixtures__/test_file_1.1.json`, `${__dirname}/../__fixtures__/test_file_1.2.json`)).toStrictEqual({
     '  host': 'hexlet.io',
     '  timeout': 50,
     '  proxy': '123.234.53.22',
@@ -27,7 +27,7 @@ test('test same files', () => {
 });
 
 test('test files with no overlap', () => {
-  expect(genDiff(`${__dirname}/test_file_2.1.json`, `${__dirname}/test_file_2.2.json`)).toStrictEqual({
+  expect(genDiff(`${__dirname}/../__fixtures__/test_file_2.1.json`, `${__dirname}/../__fixtures__/test_file_2.2.json`)).toStrictEqual({
     '- follow': 'false',
     '+ host': 'hexlet.io',
     '- proxy': '123.234.53.22',
@@ -36,7 +36,7 @@ test('test files with no overlap', () => {
 });
 
 test('test files with diferent values', () => {
-  expect(genDiff(`${__dirname}/test_file_3.1.json`, `${__dirname}/test_file_3.2.json`)).toStrictEqual({
+  expect(genDiff(`${__dirname}/../__fixtures__/test_file_3.1.json`, `${__dirname}/../__fixtures__/test_file_3.2.json`)).toStrictEqual({
     '- host': 'hexlet.io',
     '+ host': 'hexlet.ru',
     '- timeout': '50',
