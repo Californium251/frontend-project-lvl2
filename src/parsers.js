@@ -5,10 +5,12 @@ export const getFileFormat = (filePath) => filePath.split('.').slice(-1)[0];
 export const makeObj = (filePath) => {
   const fileFormat = getFileFormat(filePath);
   const fileContent = readFileSync(filePath, 'utf-8');
+  let res;
   if (fileFormat === 'json') {
-    return JSON.parse(fileContent);
+    res = JSON.parse(fileContent);
   }
   if (fileFormat === 'yml' || fileFormat === 'yaml') {
-    return yaml.load(fileContent);
+    res = yaml.load(fileContent);
   }
+  return res;
 };
