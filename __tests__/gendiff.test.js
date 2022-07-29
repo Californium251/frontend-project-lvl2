@@ -43,3 +43,30 @@ test('test files with diferent values', () => {
     '+ timeout': 30,
   });
 });
+
+test('test same files', () => {
+  expect(genDiff(`${__dirname}/../__fixtures__/test_file_4.1.yml`, `${__dirname}/../__fixtures__/test_file_4.2.yml`)).toStrictEqual({
+    '  host': 'hexlet.io',
+    '  timeout': 50,
+    '  proxy': '123.234.53.22',
+    '  follow': false,
+  });
+});
+
+test('test files with no overlap', () => {
+  expect(genDiff(`${__dirname}/../__fixtures__/test_file_5.1.yml`, `${__dirname}/../__fixtures__/test_file_5.2.yml`)).toStrictEqual({
+    '- follow': false,
+    '+ host': 'hexlet.io',
+    '- proxy': '123.234.53.22',
+    '+ timeout': 50,
+  });
+});
+
+test('test files with diferent values', () => {
+  expect(genDiff(`${__dirname}/../__fixtures__/test_file_6.1.yml`, `${__dirname}/../__fixtures__/test_file_6.2.yml`)).toStrictEqual({
+    '- host': 'hexlet.io',
+    '+ host': 'hexlet.ru',
+    '- timeout': 50,
+    '+ timeout': 30,
+  });
+});
