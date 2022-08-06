@@ -8,7 +8,7 @@ const removeDublicates = (acc, el) => {
   return acc;
 };
 const addTwoSpaces = (obj) => {
-  if (typeof obj !== 'object') {
+  if (typeof obj !== 'object' || !obj) {
     return obj;
   }
   return Object.entries(obj).map((el) => {
@@ -25,6 +25,42 @@ const addTwoSpaces = (obj) => {
     return acc;
   }, {});
 };
+const addDiff = (type, value, dest, element) => {
+  const res = [];
+  res.push(type);
+  res.push(element);
+  res.push(value);
+  dest.push(res);
+};
+const stylish = (arr) => arr.reduce((acc, el) => {
+  const [status, key, val] = el;
+  switch (status) {
+    case 'added':
+      if (Array.isArray(val)) {
+        acc[`+ ${key}`] = stylish(val);
+      } else {
+        acc[`+ ${key}`] = addTwoSpaces(val);
+      }
+      break;
+    case 'removed':
+      if (Array.isArray(val)) {
+        acc[`  ${key}`] = stylish(val);
+      } else {
+        acc[`- ${key}`] = addTwoSpaces(val);
+      }
+      break;
+    case 'unchanged':
+      if (Array.isArray(val)) {
+        acc[`  ${key}`] = stylish(val);
+      } else {
+        acc[`  ${key}`] = addTwoSpaces(val);
+      }
+      break;
+    default:
+      break;
+  }
+  return acc;
+}, {});
 const compare = (path1, path2) => {
   const firstObj = makeObj(path1);
   const secondObj = makeObj(path2);
@@ -34,26 +70,26 @@ const compare = (path1, path2) => {
         if (Object.hasOwn(o2, el)) {
           if (typeof o1[el] === 'object') {
             if (typeof o2[el] === 'object') {
-              acc[`  ${el}`] = doCompare(o1[el], o2[el]);
+              addDiff('unchanged', doCompare(o1[el], o2[el]), acc, el);
             } else {
-              acc[`- ${el}`] = addTwoSpaces(o1[el]);
-              acc[`+ ${el}`] = addTwoSpaces(o2[el]);
+              addDiff('removed', o1[el], acc, el);
+              addDiff('added', o2[el], acc, el);
             }
           } else if (o1[el] === o2[el]) {
-            acc[`  ${el}`] = o1[el];
+            addDiff('unchanged', o1[el], acc, el);
           } else {
-            acc[`- ${el}`] = o1[el];
-            acc[`+ ${el}`] = o2[el];
+            addDiff('removed', o1[el], acc, el);
+            addDiff('added', o2[el], acc, el);
           }
         } else if (typeof o1[el] === 'object') {
-          acc[`- ${el}`] = addTwoSpaces(o1[el]);
+          addDiff('removed', o1[el], acc, el);
         } else {
-          acc[`- ${el}`] = o1[el];
+          addDiff('removed', o1[el], acc, el);
         }
       } else if (typeof o2[el] === 'object') {
-        acc[`+ ${el}`] = addTwoSpaces(o2[el]);
+        addDiff('added', o2[el], acc, el);
       } else {
-        acc[`+ ${el}`] = o2[el];
+        addDiff('added', o2[el], acc, el);
       }
       return acc;
     };
@@ -61,9 +97,9 @@ const compare = (path1, path2) => {
       .concat(makeArrOfKeys(o2))
       .reduce(removeDublicates, [])
       .sort((a, b) => (a > b ? 1 : -1))
-      .reduce(getDiff, {});
+      .reduce(getDiff, []);
   };
-  return doCompare(firstObj, secondObj);
+  return stylish(doCompare(firstObj, secondObj));
 };
 
 export default compare;
