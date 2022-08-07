@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import compare from '../src/compare.js';
+import { compare, stylish, formatPlainText } from '../src/compare.js';
 
 const program = new Command();
 
@@ -11,10 +11,15 @@ const genDiff = () => {
     .description('Compares two configuration files and shows a difference.')
     .argument('<first file path>', 'first file path')
     .argument('<second file path>', 'second file path')
-    .action((firstFilePath, secondFilePath) => {
-      console.log(compare(firstFilePath, secondFilePath));
-    })
     .option('-f, --format <type>', 'output format')
+    .action((firstFilePath, secondFilePath) => {
+      const { format } = program.opts();
+      if (format === 'plain') {
+        console.log(compare(firstFilePath, secondFilePath, formatPlainText));
+      } else {
+        console.log(compare(firstFilePath, secondFilePath, stylish));
+      }
+    })
     .parse(process.argv);
 };
 

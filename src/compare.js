@@ -1,6 +1,53 @@
 import makeObj from './parsers.js';
 
 const makeArrOfKeys = (obj) => Object.entries(obj).map((el) => el[0]);
+export const formatPlainText = (inputArr) => {
+  const applyAppearence = (value) => {
+    if (typeof value === 'object' && !!value) {
+      return '[complex value]';
+    }
+    if (typeof value === 'string') {
+      return `'${value}'`;
+    }
+    return value;
+  };
+  const applyFormat = (arr, res, prefix) => arr.reduce((acc, el, index, a) => {
+    const [status, prop, val] = el;
+    if (status === 'removed') {
+      const [nextStatus, nextProp, nextVal] = a[index + 1];
+      if (prop === nextProp && nextStatus === 'added') {
+        if (prefix === '') {
+          acc.push(`Property ${prop} was updated. From ${applyAppearence(val)} to ${applyAppearence(nextVal)}`);
+        } else {
+          acc.push(`Property ${prefix}.${prop} was updated. From ${applyAppearence(val)} to ${applyAppearence(nextVal)}`);
+        }
+      } else if (prefix === '') {
+        acc.push(`Property ${prop} was removed`);
+      } else {
+        acc.push(`Property ${prefix}.${prop} was removed`);
+      }
+    }
+    if (status === 'added') {
+      const prevProp = index > 0 ? a[index - 1][1] : null;
+      if (prop !== prevProp) {
+        if (prefix === '') {
+          acc.push(`Property ${prop} was added with value: ${applyAppearence(val)}`);
+        } else {
+          acc.push(`Property ${prefix}.${prop} was added with value: ${applyAppearence(val)}`);
+        }
+      }
+    }
+    if (Array.isArray(val)) {
+      if (prefix === '') {
+        applyFormat(val, acc, `${prop}`);
+      } else {
+        applyFormat(val, acc, `${prefix}.${prop}`);
+      }
+    }
+    return acc;
+  }, res);
+  return applyFormat(inputArr, [], '').join('\n');
+};
 const removeDublicates = (acc, el) => {
   if (!acc.includes(el)) {
     acc.push(el);
@@ -32,7 +79,7 @@ const addDiff = (type, value, dest, element) => {
   res.push(value);
   dest.push(res);
 };
-const stylish = (arr) => arr.reduce((acc, el) => {
+export const stylish = (arr) => arr.reduce((acc, el) => {
   const [status, key, val] = el;
   switch (status) {
     case 'added':
@@ -61,7 +108,7 @@ const stylish = (arr) => arr.reduce((acc, el) => {
   }
   return acc;
 }, {});
-const compare = (path1, path2) => {
+export const compare = (path1, path2, format) => {
   const firstObj = makeObj(path1);
   const secondObj = makeObj(path2);
   const doCompare = (o1, o2) => {
@@ -99,7 +146,5 @@ const compare = (path1, path2) => {
       .sort((a, b) => (a > b ? 1 : -1))
       .reduce(getDiff, []);
   };
-  return stylish(doCompare(firstObj, secondObj));
+  return format(doCompare(firstObj, secondObj));
 };
-
-export default compare;
