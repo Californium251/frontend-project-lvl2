@@ -48,6 +48,7 @@ export const formatPlainText = (inputArr) => {
   }, res);
   return applyFormat(inputArr, [], '').join('\n');
 };
+export const formatJSON = (inputArr) => JSON.stringify(inputArr);
 const removeDublicates = (acc, el) => {
   if (!acc.includes(el)) {
     acc.push(el);
