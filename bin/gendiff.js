@@ -1,12 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import {
-  compare,
-  stylish,
-  formatPlainText,
-  formatJSON,
-} from '../src/compare.js';
+import compare from '../src/compare.js';
 
 const program = new Command();
 
@@ -19,13 +14,7 @@ const genDiff = () => {
     .option('-f, --format <type>', 'output format')
     .action((firstFilePath, secondFilePath) => {
       const { format } = program.opts();
-      if (format === 'plain') {
-        console.log(compare(firstFilePath, secondFilePath, formatPlainText));
-      } else if (format === 'json') {
-        console.log(compare(firstFilePath, secondFilePath, formatJSON));
-      } else {
-        console.log(compare(firstFilePath, secondFilePath, stylish));
-      }
+      console.log(compare(firstFilePath, secondFilePath, format));
     })
     .parse(process.argv);
 };

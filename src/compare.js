@@ -1,7 +1,7 @@
 import makeObj from './parsers.js';
 
 const makeArrOfKeys = (obj) => Object.entries(obj).map((el) => el[0]);
-export const formatPlainText = (inputArr) => {
+const formatPlainText = (inputArr) => {
   const applyAppearence = (value) => {
     if (typeof value === 'object' && !!value) {
       return '[complex value]';
@@ -48,7 +48,7 @@ export const formatPlainText = (inputArr) => {
   }, res);
   return applyFormat(inputArr, [], '').join('\n');
 };
-export const formatJSON = (inputArr) => JSON.stringify(inputArr);
+const formatJSON = (inputArr) => JSON.stringify(inputArr);
 const removeDublicates = (acc, el) => {
   if (!acc.includes(el)) {
     acc.push(el);
@@ -109,7 +109,7 @@ export const stylish = (arr) => arr.reduce((acc, el) => {
   }
   return acc;
 }, {});
-export const compare = (path1, path2, format) => {
+const compare = (path1, path2, format) => {
   const firstObj = makeObj(path1);
   const secondObj = makeObj(path2);
   const doCompare = (o1, o2) => {
@@ -147,5 +147,13 @@ export const compare = (path1, path2, format) => {
       .sort((a, b) => (a > b ? 1 : -1))
       .reduce(getDiff, []);
   };
-  return format(doCompare(firstObj, secondObj));
+  if (format === 'plain') {
+    return formatPlainText(doCompare(firstObj, secondObj));
+  }
+  if (format === 'json') {
+    return formatJSON(doCompare(firstObj, secondObj));
+  }
+  return stylish(doCompare(firstObj, secondObj));
 };
+
+export default compare;
