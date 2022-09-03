@@ -1,4 +1,5 @@
 import makeObj from './parsers.js';
+import { getData, getFileFormat } from './get-data.js';
 
 const makeArrOfKeys = (obj) => Object.entries(obj).map((el) => el[0]);
 const formatPlainText = (inputArr) => {
@@ -110,8 +111,8 @@ export const stylish = (arr) => arr.reduce((acc, el) => {
   return acc;
 }, {});
 const compare = (path1, path2, format) => {
-  const firstObj = makeObj(path1);
-  const secondObj = makeObj(path2);
+  const firstObj = makeObj(getData(path1), getFileFormat(path1));
+  const secondObj = makeObj(getData(path2), getFileFormat(path2));
   const doCompare = (o1, o2) => {
     const getDiff = (acc, el) => {
       if (Object.hasOwn(o1, el)) {
