@@ -1,78 +1,15 @@
 import makeObj from './parsers.js';
 import { getData, getFileFormat } from './get-data.js';
+import formatPlainText from './format-plain-text.js';
+import stylish from './stylish.js';
+import formatJSON from './format-json.js';
 
 const makeArrOfKeys = (obj) => Object.entries(obj).map((el) => el[0]);
-const formatPlainText = (inputArr) => {
-  const applyAppearence = (value) => {
-    if (typeof value === 'object' && !!value) {
-      return '[complex value]';
-    }
-    if (typeof value === 'string') {
-      return `'${value}'`;
-    }
-    return value;
-  };
-  const applyFormat = (arr, res, prefix) => arr.reduce((acc, el, index, a) => {
-    const [status, prop, val] = el;
-    if (status === 'removed') {
-      const [nextStatus, nextProp, nextVal] = a[index + 1];
-      if (prop === nextProp && nextStatus === 'added') {
-        if (prefix === '') {
-          acc.push(`Property ${prop} was updated. From ${applyAppearence(val)} to ${applyAppearence(nextVal)}`);
-        } else {
-          acc.push(`Property ${prefix}.${prop} was updated. From ${applyAppearence(val)} to ${applyAppearence(nextVal)}`);
-        }
-      } else if (prefix === '') {
-        acc.push(`Property ${prop} was removed`);
-      } else {
-        acc.push(`Property ${prefix}.${prop} was removed`);
-      }
-    }
-    if (status === 'added') {
-      const prevProp = index > 0 ? a[index - 1][1] : null;
-      if (prop !== prevProp) {
-        if (prefix === '') {
-          acc.push(`Property ${prop} was added with value: ${applyAppearence(val)}`);
-        } else {
-          acc.push(`Property ${prefix}.${prop} was added with value: ${applyAppearence(val)}`);
-        }
-      }
-    }
-    if (Array.isArray(val)) {
-      if (prefix === '') {
-        applyFormat(val, acc, `${prop}`);
-      } else {
-        applyFormat(val, acc, `${prefix}.${prop}`);
-      }
-    }
-    return acc;
-  }, res);
-  return applyFormat(inputArr, [], '').join('\n');
-};
-const formatJSON = (inputArr) => JSON.stringify(inputArr);
 const removeDublicates = (acc, el) => {
   if (!acc.includes(el)) {
     acc.push(el);
   }
   return acc;
-};
-const addTwoSpaces = (obj) => {
-  if (typeof obj !== 'object' || !obj) {
-    return obj;
-  }
-  return Object.entries(obj).map((el) => {
-    const arr = [];
-    arr.push(`  ${el[0]}`);
-    if (typeof el[1] === 'object') {
-      arr.push(addTwoSpaces(el[1]));
-    } else {
-      arr.push(el[1]);
-    }
-    return arr;
-  }).reduce((acc, [key, value]) => {
-    acc[key] = value;
-    return acc;
-  }, {});
 };
 const addDiff = (type, value, dest, element) => {
   const res = [];
@@ -81,35 +18,6 @@ const addDiff = (type, value, dest, element) => {
   res.push(value);
   dest.push(res);
 };
-export const stylish = (arr) => arr.reduce((acc, el) => {
-  const [status, key, val] = el;
-  switch (status) {
-    case 'added':
-      if (Array.isArray(val)) {
-        acc[`+ ${key}`] = stylish(val);
-      } else {
-        acc[`+ ${key}`] = addTwoSpaces(val);
-      }
-      break;
-    case 'removed':
-      if (Array.isArray(val)) {
-        acc[`  ${key}`] = stylish(val);
-      } else {
-        acc[`- ${key}`] = addTwoSpaces(val);
-      }
-      break;
-    case 'unchanged':
-      if (Array.isArray(val)) {
-        acc[`  ${key}`] = stylish(val);
-      } else {
-        acc[`  ${key}`] = addTwoSpaces(val);
-      }
-      break;
-    default:
-      break;
-  }
-  return acc;
-}, {});
 const compare = (path1, path2, format) => {
   const firstObj = makeObj(getData(path1), getFileFormat(path1));
   const secondObj = makeObj(getData(path2), getFileFormat(path2));
