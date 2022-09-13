@@ -12,7 +12,12 @@ npm ci
 gendiff [options] <first file path> <second file path> 
 ```
 
-Examples how it works
-- [![Default mode](https://asciinema.org/a/YW01iaiYqUdu3mZP1XFi2aswd.svg)](https://asciinema.org/a/YW01iaiYqUdu3mZP1XFi2aswd);
-- [![Plain text mode](https://asciinema.org/a/ifBGJ9LjZ2qbPLARgqPMLLqrK.svg)](https://asciinema.org/a/ifBGJ9LjZ2qbPLARgqPMLLqrK)
-- [![JSON mode](https://asciinema.org/a/7RAeNOx9AW4dmxxCKjVJHZuN5.svg)](https://asciinema.org/a/7RAeNOx9AW4dmxxCKjVJHZuN5)
+### Examples how it works
+#### Default mode
+[![Default mode](https://asciinema.org/a/YW01iaiYqUdu3mZP1XFi2aswd.svg)](https://asciinema.org/a/YW01iaiYqUdu3mZP1XFi2aswd);
+
+#### Plain text mode
+[![Plain text mode](https://asciinema.org/a/ifBGJ9LjZ2qbPLARgqPMLLqrK.svg)](https://asciinema.org/a/ifBGJ9LjZ2qbPLARgqPMLLqrK)
+
+#### JSON mode
+[![JSON mode](https://asciinema.org/a/7RAeNOx9AW4dmxxCKjVJHZuN5.svg)](https://asciinema.org/a/7RAeNOx9AW4dmxxCKjVJHZuN5)
