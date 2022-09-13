@@ -13,6 +13,6 @@ gendiff [options] <first file path> <second file path>
 ```
 
 Examples how it works
-- [Default mode](https://asciinema.org/connect/7ae392bd-9efb-4574-a279-294ecdb7a023);
-- [Plain text mode](https://asciinema.org/connect/7ae392bd-9efb-4574-a279-294ecdb7a023);
-- [JSON mode](https://asciinema.org/connect/7ae392bd-9efb-4574-a279-294ecdb7a023).
+- [![Default mode](https://asciinema.org/a/YW01iaiYqUdu3mZP1XFi2aswd.svg)](https://asciinema.org/a/YW01iaiYqUdu3mZP1XFi2aswd);
+- [![Plain text mode](https://asciinema.org/a/ifBGJ9LjZ2qbPLARgqPMLLqrK.svg)](https://asciinema.org/a/ifBGJ9LjZ2qbPLARgqPMLLqrK)
+- [![JSON mode](https://asciinema.org/a/7RAeNOx9AW4dmxxCKjVJHZuN5.svg)](https://asciinema.org/a/7RAeNOx9AW4dmxxCKjVJHZuN5)
