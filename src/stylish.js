@@ -1,61 +1,39 @@
-const addTwoSpaces = (obj) => {
-  if (typeof obj !== 'object' || !obj) {
-    return obj;
-  }
-  return Object.entries(obj).map((el) => {
-    const arr = [];
-    arr.push(`  ${el[0]}`);
-    if (typeof el[1] === 'object') {
-      arr.push(addTwoSpaces(el[1]));
-    } else {
-      arr.push(el[1]);
-    }
-    return arr;
-  }).reduce((acc, [key, value]) => {
-    acc[key] = value;
-    return acc;
-  }, {});
-};
-const createTree = (arr) => arr.reduce((acc, el) => {
-  const [status, key, val] = el;
-  switch (status) {
-    case 'added':
-      if (Array.isArray(val)) {
-        acc[`+ ${key}`] = createTree(val);
-      } else {
-        acc[`+ ${key}`] = addTwoSpaces(val);
-      }
-      break;
-    case 'removed':
-      if (Array.isArray(val)) {
-        acc[`  ${key}`] = createTree(val);
-      } else {
-        acc[`- ${key}`] = addTwoSpaces(val);
-      }
-      break;
-    case 'unchanged':
-      if (Array.isArray(val)) {
-        acc[`  ${key}`] = createTree(val);
-      } else {
-        acc[`  ${key}`] = addTwoSpaces(val);
-      }
-      break;
-    default:
-      break;
-  }
-  return acc;
-}, {});
+import _ from 'lodash';
 
-const transformObjectToString = (o) => {
-  const objToString = (obj, depth) => Object.entries(obj).map(([key, value]) => {
-    if (typeof value === 'object' && value !== null) {
-      return `${depth}${key}: {\n${objToString(value, `${depth}    `)}\n${depth}  }`;
-    }
-    return `${depth}${key}: ${value}`;
-  }).join('\n');
-  return `{\n${objToString(o, '')}\n}`;
+const createStr = (spaces, status, key, value) => {
+  const addIndent = (indent, val) => `\n${indent}${val}`;
+  const createPairKeyVal = (k, val) => `${k}: ${val}`;
+  const createUnchangedStr = (indent, k, val) => addIndent(indent, `  ${createPairKeyVal(k, val)}`);
+  const createAddedStr = (indent, k, val) => addIndent(indent, `+ ${createPairKeyVal(k, val)}`);
+  const createRemovedStr = (indent, k, val) => addIndent(indent, `- ${createPairKeyVal(k, val)}`);
+  const createUpdatedStr = (indent, k, vals) => `${createRemovedStr(indent, k, vals[0])}${createAddedStr(indent, k, vals[1])}`;
+  if (status === 'unchanged') {
+    return createUnchangedStr(spaces, key, value);
+  }
+  if (status === 'added') {
+    return createAddedStr(spaces, key, value);
+  }
+  if (status === 'removed') {
+    return createRemovedStr(spaces, key, value, spaces);
+  }
+  return createUpdatedStr(spaces, key, (value));
 };
 
-const stylish = (arr) => transformObjectToString(createTree(arr));
+const stylish = (arr) => {
+  const addOpeningBracket = (key, indent) => `\n${indent}${key}: {`;
+  const addClosingBracket = (indent) => `\n${indent}}`;
+  const createTree = (data, indent) => data
+    .reduce((acc, [status, key, values]) => {
+      if (status === 'complex value') {
+        acc.push(addOpeningBracket(key, `${indent}  `));
+        acc.push(createTree(values, `${indent}    `));
+        acc.push(addClosingBracket(`${indent}  `));
+        return acc;
+      }
+      acc.push(createStr(indent, status, key, values));
+      return acc;
+    }, []).join('');
+  return `{\n${createTree(arr, '  ')}\n}`;
+};
 
 export default stylish;
