@@ -7,7 +7,7 @@ const makeObj = (data, format) => {
   if (format === 'yml' || format === 'yaml') {
     return yaml.load(data);
   }
-  return null;
+  throw new Error('Error: either data is not provided or format is not supported.');
 };
 
 export default makeObj;

@@ -9,6 +9,7 @@ const __dirname = dirname(__filename);
 const getFixturePath = (filename) => join(__dirname, '..', '__fixtures__', filename);
 const expextedResult1 = readFileSync(getFixturePath('expected_1.txt'), 'utf-8');
 const expectedResult2 = readFileSync(getFixturePath('expected_2.txt'), 'utf-8');
+const expectedResult3 = readFileSync(getFixturePath('expected_3.json'), 'utf-8');
 
 test('test files from the task on Hexlet', () => {
   expect(genDiff(getFixturePath('test_1.json'), getFixturePath('test_2.json')))
@@ -27,5 +28,5 @@ test('test plain format', () => {
 
 test('test JSON format', () => {
   expect(genDiff(getFixturePath('test_1.yml'), getFixturePath('test_2.yml'), 'json'))
-    .toStrictEqual(expectedResult2);
+    .toStrictEqual(expectedResult3);
 });
