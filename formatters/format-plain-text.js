@@ -1,49 +1,43 @@
-const formatPlainText = (inputArr) => {
-  const applyAppearence = (value) => {
-    if (typeof value === 'object' && !!value) {
+import _ from 'lodash';
+
+const formatPlainText = (dataToBeFormatted) => {
+  const applyFormat = (val) => {
+    if (_.isObject(val)) {
       return '[complex value]';
     }
-    if (typeof value === 'string') {
-      return `'${value}'`;
+    if (typeof val === 'string') {
+      return `'${val}'`;
     }
-    return value;
+    return val;
   };
-  const applyFormat = (arr, res, prefix) => arr.reduce((acc, el, index, a) => {
-    const [status, prop, val] = el;
-    if (status === 'removed') {
-      const [nextStatus, nextProp, nextVal] = a[index + 1];
-      if (prop === nextProp && nextStatus === 'added') {
-        if (prefix === '') {
-          acc.push(`Property ${prop} was updated. From ${applyAppearence(val)} to ${applyAppearence(nextVal)}`);
-        } else {
-          acc.push(`Property ${prefix}.${prop} was updated. From ${applyAppearence(val)} to ${applyAppearence(nextVal)}`);
-        }
-      } else if (prefix === '') {
-        acc.push(`Property ${prop} was removed`);
-      } else {
-        acc.push(`Property ${prefix}.${prop} was removed`);
-      }
-    }
+  const format = (arr, prefix) => arr.reduce((acc, {
+    type,
+    key,
+    status,
+    children,
+    data,
+    firstFileData,
+    secondFileData,
+  }) => {
+    const objData = applyFormat(data);
     if (status === 'added') {
-      const prevProp = index > 0 ? a[index - 1][1] : null;
-      if (prop !== prevProp) {
-        if (prefix === '') {
-          acc.push(`Property ${prop} was added with value: ${applyAppearence(val)}`);
-        } else {
-          acc.push(`Property ${prefix}.${prop} was added with value: ${applyAppearence(val)}`);
-        }
-      }
+      acc.push(`Property ${prefix}${key} was added with value: ${objData}`);
     }
-    if (Array.isArray(val)) {
-      if (prefix === '') {
-        applyFormat(val, acc, `${prop}`);
-      } else {
-        applyFormat(val, acc, `${prefix}.${prop}`);
-      }
+    if (status === 'removed') {
+      acc.push(`Property ${prefix}${key} was removed`);
+    }
+    if (status === 'updated') {
+      const firstFileDataObj = applyFormat(firstFileData);
+      const secondFileDataObj = applyFormat(secondFileData);
+      acc.push(`Property ${prefix}${key} was updated. From ${firstFileDataObj} to ${secondFileDataObj}`);
+    }
+    if (type === 'complex value') {
+      const propPrefix = prefix === '' ? `${key}.` : `${prefix}${key}.`;
+      acc.push(format(children, propPrefix));
     }
     return acc;
-  }, res);
-  return applyFormat(inputArr, [], '').join('\n');
+  }, []).join('\n');
+  return format(dataToBeFormatted, '');
 };
 
 export default formatPlainText;
