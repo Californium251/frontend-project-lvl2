@@ -38,8 +38,12 @@ const stylish = (diffData) => {
       acc.push(`${indent(depth)}  ${key}: ${objData}`);
       return acc;
     }
-    const firstFileDataObj = _.isObject(firstFileData) ? stringify(firstFileData, depth + 1) : firstFileData;
-    const secondFileDataObj = _.isObject(secondFileData) ? stringify(secondFileData, depth + 1) : secondFileData;
+    const firstFileDataObj = (
+      _.isObject(firstFileData) ? stringify(firstFileData, depth + 1) : firstFileData
+    );
+    const secondFileDataObj = (
+      _.isObject(secondFileData) ? stringify(secondFileData, depth + 1) : secondFileData
+    );
     acc.push(`${indent(depth)}- ${key}: ${firstFileDataObj}`);
     acc.push(`${indent(depth)}+ ${key}: ${secondFileDataObj}`);
     return acc;
