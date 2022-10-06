@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
-const doCompare = (firstFileData, secondFileData) => {
-  const keys = _.union(_.keys(firstFileData), _.keys(secondFileData));
+const buildTree = (firstFileData, secondFileData) => {
+  const keys = _.sortBy(_.union(_.keys(firstFileData), _.keys(secondFileData)));
   return keys.map((key) => {
     if (!_.has(firstFileData, key)) {
       return {
@@ -17,7 +17,7 @@ const doCompare = (firstFileData, secondFileData) => {
       return {
         type: 'complex value',
         key,
-        children: doCompare(firstFileData[key], secondFileData[key]),
+        children: buildTree(firstFileData[key], secondFileData[key]),
       };
     }
     if (firstFileData[key] !== secondFileData[key]) {
@@ -29,7 +29,7 @@ const doCompare = (firstFileData, secondFileData) => {
       };
     }
     return { status: 'unchanged', key, data: secondFileData[key] };
-  }).sort((a, b) => (a.key > b.key ? 1 : -1));
+  });
 };
 
-export default doCompare;
+export default buildTree;

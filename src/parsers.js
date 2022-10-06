@@ -1,6 +1,6 @@
 import * as yaml from 'js-yaml';
 
-const makeObj = (data, format) => {
+const parse = (data, format) => {
   if (format === 'json') {
     return JSON.parse(data);
   }
@@ -10,4 +10,4 @@ const makeObj = (data, format) => {
   throw new Error('Error: either data is not provided or format is not supported.');
 };
 
-export default makeObj;
+export default parse;
