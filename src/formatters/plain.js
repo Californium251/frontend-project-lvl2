@@ -11,7 +11,7 @@ const stringify = (val) => {
 };
 
 const formatPlainText = (dataToBeFormatted) => {
-  const format = (arr, prefix) => arr.reduce((acc, {
+  const format = (arr, prefix) => arr.map(({
     type,
     key,
     status,
@@ -22,22 +22,21 @@ const formatPlainText = (dataToBeFormatted) => {
   }) => {
     const objData = stringify(data);
     if (status === 'added') {
-      acc.push(`Property '${prefix}${key}' was added with value: ${objData}`);
+      return `Property '${prefix}${key}' was added with value: ${objData}`;
     }
     if (status === 'removed') {
-      acc.push(`Property '${prefix}${key}' was removed`);
+      return `Property '${prefix}${key}' was removed`;
     }
     if (status === 'updated') {
       const firstFileDataObj = stringify(firstFileData);
       const secondFileDataObj = stringify(secondFileData);
-      acc.push(`Property '${prefix}${key}' was updated. From ${firstFileDataObj} to ${secondFileDataObj}`);
+      return `Property '${prefix}${key}' was updated. From ${firstFileDataObj} to ${secondFileDataObj}`;
     }
     if (type === 'complex value') {
       const propPrefix = prefix === '' ? `${key}.` : `${prefix}${key}.`;
-      acc.push(format(children, propPrefix));
+      return format(children, propPrefix);
     }
-    return acc;
-  }, []).join('\n');
+  }).filter((el) => !!el).join('\n');
   return format(dataToBeFormatted, '');
 };
 

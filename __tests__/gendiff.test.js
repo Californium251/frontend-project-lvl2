@@ -11,22 +11,22 @@ const expextedResult1 = readFileSync(getFixturePath('expected_1.txt'), 'utf-8');
 const expectedResult2 = readFileSync(getFixturePath('expected_2.txt'), 'utf-8');
 const expectedResult3 = readFileSync(getFixturePath('expected_3.json'), 'utf-8');
 
-test('test files from the task on Hexlet', () => {
+test('Default', () => {
   expect(genDiff(getFixturePath('test_1.json'), getFixturePath('test_2.json')))
     .toStrictEqual(expextedResult1);
 });
 
-test('test YAML files from the task on Hexlet', () => {
+test('YAML', () => {
   expect(genDiff(getFixturePath('test_1.yml'), getFixturePath('test_2.yml')))
     .toStrictEqual(expextedResult1);
 });
 
-test('test plain format', () => {
+test('Plain', () => {
   expect(genDiff(getFixturePath('test_1.yml'), getFixturePath('test_2.yml'), 'plain'))
     .toStrictEqual(expectedResult2);
 });
 
-test('test JSON format', () => {
+test('JSON', () => {
   expect(genDiff(getFixturePath('test_1.yml'), getFixturePath('test_2.yml'), 'json'))
     .toStrictEqual(expectedResult3);
 });
