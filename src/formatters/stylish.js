@@ -1,8 +1,11 @@
 import _ from 'lodash';
 
 const indent = (depth, spacesCount = 4) => ' '.repeat(depth * spacesCount - 2);
-const stringify = (obj, depth) => {
-  const data = Object.entries(obj).map(([key, val]) => {
+const stringify = (inputData, depth) => {
+  if (!_.isObject(inputData)) {
+    return inputData;
+  }
+  const data = Object.entries(inputData).map(([key, val]) => {
     if (!_.isObject(val)) {
       return `${indent(depth)}  ${key}: ${val}`;
     }
@@ -12,7 +15,7 @@ const stringify = (obj, depth) => {
 };
 
 const stylish = (diffData) => {
-  const format = (arr, depth) => arr.reduce((acc, {
+  const format = (arr, depth) => arr.map(({
     type,
     key,
     status,
@@ -22,32 +25,22 @@ const stylish = (diffData) => {
     secondFileData,
   }) => {
     if (type === 'complex value') {
-      acc.push(`${indent(depth)}  ${key}: {\n${format(children, depth + 1)}\n  ${indent(depth)}}`);
-      return acc;
+      return `${indent(depth)}  ${key}: {\n${format(children, depth + 1)}\n  ${indent(depth)}}`;
     }
-    const objData = _.isObject(data) ? stringify(data, depth + 1) : data;
+    const objData = stringify(data, depth + 1);
     if (status === 'added') {
-      acc.push(`${indent(depth)}+ ${key}: ${objData}`);
-      return acc;
+      return `${indent(depth)}+ ${key}: ${objData}`;
     }
     if (status === 'removed') {
-      acc.push(`${indent(depth)}- ${key}: ${objData}`);
-      return acc;
+      return `${indent(depth)}- ${key}: ${objData}`;
     }
     if (status === 'unchanged') {
-      acc.push(`${indent(depth)}  ${key}: ${objData}`);
-      return acc;
+      return `${indent(depth)}  ${key}: ${objData}`;
     }
-    const firstFileDataObj = (
-      _.isObject(firstFileData) ? stringify(firstFileData, depth + 1) : firstFileData
-    );
-    const secondFileDataObj = (
-      _.isObject(secondFileData) ? stringify(secondFileData, depth + 1) : secondFileData
-    );
-    acc.push(`${indent(depth)}- ${key}: ${firstFileDataObj}`);
-    acc.push(`${indent(depth)}+ ${key}: ${secondFileDataObj}`);
-    return acc;
-  }, []).join('\n');
+    const firstFileDataObj = stringify(firstFileData, depth + 1);
+    const secondFileDataObj = stringify(secondFileData, depth + 1);
+    return `${indent(depth)}- ${key}: ${firstFileDataObj}\n${indent(depth)}+ ${key}: ${secondFileDataObj}`;
+  }).join('\n');
   return `{\n${format(diffData, 1)}\n}`;
 };
 

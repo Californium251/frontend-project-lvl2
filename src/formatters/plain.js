@@ -1,15 +1,16 @@
 import _ from 'lodash';
 
+const stringify = (val) => {
+  if (_.isObject(val)) {
+    return '[complex value]';
+  }
+  if (typeof val === 'string') {
+    return `'${val}'`;
+  }
+  return val;
+};
+
 const formatPlainText = (dataToBeFormatted) => {
-  const applyFormat = (val) => {
-    if (_.isObject(val)) {
-      return '[complex value]';
-    }
-    if (typeof val === 'string') {
-      return `'${val}'`;
-    }
-    return val;
-  };
   const format = (arr, prefix) => arr.reduce((acc, {
     type,
     key,
@@ -19,7 +20,7 @@ const formatPlainText = (dataToBeFormatted) => {
     firstFileData,
     secondFileData,
   }) => {
-    const objData = applyFormat(data);
+    const objData = stringify(data);
     if (status === 'added') {
       acc.push(`Property ${prefix}${key} was added with value: ${objData}`);
     }
@@ -27,8 +28,8 @@ const formatPlainText = (dataToBeFormatted) => {
       acc.push(`Property ${prefix}${key} was removed`);
     }
     if (status === 'updated') {
-      const firstFileDataObj = applyFormat(firstFileData);
-      const secondFileDataObj = applyFormat(secondFileData);
+      const firstFileDataObj = stringify(firstFileData);
+      const secondFileDataObj = stringify(secondFileData);
       acc.push(`Property ${prefix}${key} was updated. From ${firstFileDataObj} to ${secondFileDataObj}`);
     }
     if (type === 'complex value') {
