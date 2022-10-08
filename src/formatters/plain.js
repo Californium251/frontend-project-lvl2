@@ -22,15 +22,15 @@ const formatPlainText = (dataToBeFormatted) => {
   }) => {
     const objData = stringify(data);
     if (status === 'added') {
-      acc.push(`Property ${prefix}${key} was added with value: ${objData}`);
+      acc.push(`Property '${prefix}${key}' was added with value: ${objData}`);
     }
     if (status === 'removed') {
-      acc.push(`Property ${prefix}${key} was removed`);
+      acc.push(`Property '${prefix}${key}' was removed`);
     }
     if (status === 'updated') {
       const firstFileDataObj = stringify(firstFileData);
       const secondFileDataObj = stringify(secondFileData);
-      acc.push(`Property ${prefix}${key} was updated. From ${firstFileDataObj} to ${secondFileDataObj}`);
+      acc.push(`Property '${prefix}${key}' was updated. From ${firstFileDataObj} to ${secondFileDataObj}`);
     }
     if (type === 'complex value') {
       const propPrefix = prefix === '' ? `${key}.` : `${prefix}${key}.`;
