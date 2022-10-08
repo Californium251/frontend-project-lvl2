@@ -9,7 +9,7 @@ const format = (formatName, diff) => {
   if (formatName === 'json') {
     return formatJSON(diff);
   }
-  if (formatName === stylish) {
+  if (formatName === stylish || formatName === 'yml') {
     return stylish(diff);
   }
   throw new Error('Error: unknown output format requested.');
