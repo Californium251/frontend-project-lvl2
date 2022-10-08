@@ -36,6 +36,7 @@ const formatPlainText = (dataToBeFormatted) => {
       const propPrefix = prefix === '' ? `${key}.` : `${prefix}${key}.`;
       return format(children, propPrefix);
     }
+    return null;
   }).filter((el) => !!el).join('\n');
   return format(dataToBeFormatted, '');
 };
