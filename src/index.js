@@ -6,7 +6,7 @@ import format from './formatters/index.js';
 import buildTree from './build-tree.js';
 
 const makePath = (filePath) => path.resolve(process.cwd(), filePath);
-const getFileFormat = (filePath) => path.extname(filePath);
+const getFileFormat = (filePath) => path.extname(filePath).substring(1);
 const getData = (filePath) => readFileSync(makePath(filePath), 'utf-8');
 
 const genDiff = (path1, path2, formatName = 'stylish') => {
