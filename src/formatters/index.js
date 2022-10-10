@@ -1,10 +1,10 @@
 import formatJSON from './json.js';
-import formatPlainText from './plain.js';
+import formatToPlainText from './plain.js';
 import stylish from './stylish.js';
 
 const format = (formatName, diff) => {
   if (formatName === 'plain') {
-    return formatPlainText(diff);
+    return formatToPlainText(diff);
   }
   if (formatName === 'json') {
     return formatJSON(diff);

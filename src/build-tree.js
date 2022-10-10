@@ -1,34 +1,34 @@
 import _ from 'lodash';
 
-const buildTree = (firstFileData, secondFileData) => {
-  const keys = _.sortBy(_.union(_.keys(firstFileData), _.keys(secondFileData)));
+const buildTree = (data1, data2) => {
+  const keys = _.sortBy(_.union(_.keys(data1), _.keys(data2)));
   return keys.map((key) => {
-    if (!_.has(firstFileData, key)) {
+    if (!_.has(data1, key)) {
       return {
-        status: 'added',
+        type: 'added',
         key,
-        data: secondFileData[key],
+        data: data2[key],
       };
     }
-    if (!_.has(secondFileData, key)) {
-      return { status: 'removed', key, data: firstFileData[key] };
+    if (!_.has(data2, key)) {
+      return { type: 'removed', key, data: data1[key] };
     }
-    if (_.isObject(firstFileData[key]) && _.isObject(secondFileData[key])) {
+    if (_.isObject(data1[key]) && _.isObject(data2[key])) {
       return {
         type: 'complex value',
         key,
-        children: buildTree(firstFileData[key], secondFileData[key]),
+        children: buildTree(data1[key], data2[key]),
       };
     }
-    if (firstFileData[key] !== secondFileData[key]) {
+    if (data1[key] !== data2[key]) {
       return {
-        status: 'updated',
+        type: 'updated',
         key,
-        firstFileData: firstFileData[key],
-        secondFileData: secondFileData[key],
+        data1: data1[key],
+        data2: data2[key],
       };
     }
-    return { status: 'unchanged', key, data: secondFileData[key] };
+    return { type: 'unchanged', key, data: data2[key] };
   });
 };
 

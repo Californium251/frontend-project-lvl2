@@ -10,27 +10,25 @@ const stringify = (val) => {
   return val;
 };
 
-const formatPlainText = (dataToBeFormatted) => {
+export default (diffTree) => {
   const format = (arr, prefix) => arr.map(({
     type,
     key,
-    status,
     children,
     data,
-    firstFileData,
-    secondFileData,
+    data1,
+    data2,
   }) => {
-    const objData = stringify(data);
-    if (status === 'added') {
-      return `Property '${prefix}${key}' was added with value: ${objData}`;
+    if (type === 'added') {
+      return `Property '${prefix}${key}' was added with value: ${stringify(data)}`;
     }
-    if (status === 'removed') {
+    if (type === 'removed') {
       return `Property '${prefix}${key}' was removed`;
     }
-    if (status === 'updated') {
-      const firstFileDataObj = stringify(firstFileData);
-      const secondFileDataObj = stringify(secondFileData);
-      return `Property '${prefix}${key}' was updated. From ${firstFileDataObj} to ${secondFileDataObj}`;
+    if (type === 'updated') {
+      const dataObj1 = stringify(data1);
+      const dataObj2 = stringify(data2);
+      return `Property '${prefix}${key}' was updated. From ${dataObj1} to ${dataObj2}`;
     }
     if (type === 'complex value') {
       const propPrefix = prefix === '' ? `${key}.` : `${prefix}${key}.`;
@@ -38,7 +36,5 @@ const formatPlainText = (dataToBeFormatted) => {
     }
     return null;
   }).filter((el) => !!el).join('\n');
-  return format(dataToBeFormatted, '');
+  return format(diffTree, '');
 };
-
-export default formatPlainText;
